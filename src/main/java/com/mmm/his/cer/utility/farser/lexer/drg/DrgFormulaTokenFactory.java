@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.lexer.drg;
 
 import com.mmm.his.cer.utility.farser.lexer.LexerTokenFactory;
-
 import java.security.InvalidParameterException;
 
 /**

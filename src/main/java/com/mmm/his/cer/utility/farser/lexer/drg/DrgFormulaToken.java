@@ -3,7 +3,6 @@ package com.mmm.his.cer.utility.farser.lexer.drg;
 import com.mmm.his.cer.utility.farser.lexer.CommonTokenType;
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
-
 import java.util.Optional;
 
 /**
