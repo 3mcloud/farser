@@ -194,6 +194,32 @@ two methods
     
 Users can query the expression result after the AST has been evaluated.
 
+#### Abstract Syntax Tree Examples
+
+The following diagrams are a visual representation of the AST after it was parsed by the descent parser.
+
+![simple ast example](doc/simple.bmp "simple ast example")
+
+![multiple OR node ast example](doc/multi_or.bmp "multi OR ast")
+
+![complex ast example](doc/complex.bmp "complex ast example")
+
+![not ast example](doc/not.bmp "not node ast example")
+
+![simple AND/OR](doc/simple_and_or.bmp "simple and/or")
+
+#### Abstract Syntax Tree Evaluation Examples
+
+The following diagrams are a visual representation of how the AST would be evaluated given the mask (list of operands).
+
+![Complex Eval C & D](doc/complex_eval_C_and_D.bmp "complex eval C &D")
+
+![Complex Eval AEF](doc/complex_eval_AEF.bmp "complex eval AEF")
+
+![Multi OR Eval B](doc/multi_or_eval_B.bmp "multi OR eval B")
+
+![Failed eval](doc/simple_and_or_failed_eval.bmp "failed eval")
+
 
 #### Farser Maintainers
 
