@@ -1,17 +1,15 @@
 package com.mmm.his.cer.utility.farser.ast.parser;
 
-import java.util.Set;
-
 /**
  * Class that contains all information about a expression match from {@link DescentParser}.
  *
- * @param <T> the type of object that will be contains in the matches set.
+ * @param <C> the type of context
  * @author Mike Funaro
  */
-public class ExpressionResult<T> {
+public class ExpressionResult<C> {
 
   private final boolean matched;
-  private final Set<T> matches;
+  private final C context;
 
   /**
    * Ctor.
@@ -19,18 +17,18 @@ public class ExpressionResult<T> {
    * @param matched boolean true if the expression evaluated to true, false otherwise. When there is
    *                true in the matched field the contents of the matches field will have the
    *                terminal objects that were matched.
-   * @param matches set of terminal objects that were matched during the expression evaluation.
+   * @param context the context used in evaluation.
    */
-  public ExpressionResult(boolean matched, Set<T> matches) {
+  public ExpressionResult(boolean matched, C context) {
     this.matched = matched;
-    this.matches = matches;
+    this.context = context;
   }
 
   public boolean isMatched() {
     return matched;
   }
 
-  public Set<T> getMatches() {
-    return matches;
+  public C getContext() {
+    return context;
   }
 }

@@ -1,22 +1,19 @@
 package com.mmm.his.cer.utility.farser.ast.node.type;
 
-import java.util.List;
-import java.util.Set;
-
 /**
  * Interface for each node of the AST to implement. This will allow the evaluation of the entire
  * boolean expression through recursion.
  *
- * @param <T> The type used in the terminal nodes.
+ * @param <C> The type of context to be used for the terminal node execution.
  * @author Mike Funaro
  */
-public interface BooleanExpression<T> {
+public interface BooleanExpression<C> {
 
   /**
    * Evaluate an expression returning true or false based on tests against the operands sent in.
    *
-   * @param operands the list of operands to buildExpressionTree the boolean test around
+   * @param context     The context that will be used in the evaluation of the node.
    * @return true or false.
    */
-  boolean evaluate(List<T> operands, Set<T> accumulator);
+  boolean evaluate(C context);
 }

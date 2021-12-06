@@ -1,31 +1,27 @@
 package com.mmm.his.cer.utility.farser.ast.node.terminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-import java.util.List;
-import java.util.Set;
+
+import java.util.Collection;
 
 /**
- * A terminal node that represents an an evaluation that centers around the list#contains. This node
+ * A terminal node that represents an evaluation that centers around the list#contains. This node
  * will check the incoming values to see if the field value is contained with in it.
  *
- * @param <T> The type used in the terminal nodes.
+ * @param <C> The type used in the terminal nodes.
  * @author Mike Funaro
  */
-public class ContainsNode<T> implements BooleanExpression<T> {
+public class ContainsNode<C extends Collection<A>, A> implements BooleanExpression<C> {
 
-  private final T value;
+  private final A value;
 
-  public ContainsNode(T value) {
+  public ContainsNode(A value) {
     this.value = value;
   }
 
   @Override
-  public boolean evaluate(List<T> values, Set<T> accumulator) {
-    boolean contains = values.contains(this.value);
-    if (contains) {
-      accumulator.add(value);
-    }
-    return contains;
+  public boolean evaluate(C context) {
+    return context.contains(this.value);
   }
 
   @Override

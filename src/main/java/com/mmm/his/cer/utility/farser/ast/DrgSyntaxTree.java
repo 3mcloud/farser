@@ -2,6 +2,7 @@ package com.mmm.his.cer.utility.farser.ast;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,28 +12,27 @@ import java.util.Set;
  *
  * @author Mike Funaro
  */
-public class DrgSyntaxTree<T> {
+public class DrgSyntaxTree<C> {
 
-  private BooleanExpression<T> ast;
+  private BooleanExpression<C> ast;
 
-  public DrgSyntaxTree(BooleanExpression<T> ast) {
+  public DrgSyntaxTree(BooleanExpression<C> ast) {
     this.ast = ast;
   }
 
-  public void setAst(BooleanExpression<T> ast) {
+  public void setAst(BooleanExpression<C> ast) {
     this.ast = ast;
   }
 
   /**
    * Evaluate an expression that was previously built by the parser.
    *
-   * @param operands the list of operand objects that we want to match against.
+   * @param context the context object that will be used in the evaluation.
    * @return {@link ExpressionResult}
-   *     ExpressionResult object which will have a the data about the outcome of the evaluation.
+   *     ExpressionResult object which will have the data about the outcome of the evaluation.
    */
-  public ExpressionResult<T> evaluateExpression(List<T> operands) {
-    Set<T> matches = new LinkedHashSet<>();
-    boolean evaluate = this.ast.evaluate(operands, matches);
-    return new ExpressionResult<>(evaluate, matches);
+  public ExpressionResult<C> evaluateExpression(C context) {
+    boolean evaluate = this.ast.evaluate(context);
+    return new ExpressionResult<>(evaluate, context);
   }
 }
