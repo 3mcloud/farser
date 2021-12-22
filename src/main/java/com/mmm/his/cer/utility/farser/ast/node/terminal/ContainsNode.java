@@ -1,7 +1,6 @@
 package com.mmm.his.cer.utility.farser.ast.node.terminal;
 
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
-
 import java.util.Collection;
 
 /**

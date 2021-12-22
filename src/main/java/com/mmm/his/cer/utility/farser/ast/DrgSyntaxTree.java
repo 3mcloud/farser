@@ -3,10 +3,6 @@ package com.mmm.his.cer.utility.farser.ast;
 import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Class that wraps a {@link BooleanExpression} and provides methods to evaluate it.
  *
