@@ -13,13 +13,7 @@ public class Or<C> extends NonTerminal<C> {
 
   @Override
   public boolean evaluate(C context) {
-    boolean leftTrue = left.evaluate(context);
-
-    if (leftTrue) {
-      return true;
-    }
-
-    return right.evaluate(context);
+    return left.evaluate(context) || right.evaluate(context);
   }
 
   @Override

@@ -30,7 +30,7 @@ public class DescentParser<T> {
   /**
    * Ctor.
    *
-   * @param tokenIterator   list of tokens to parse into the AbstrA syntax tree.
+   * @param tokenIterator   list of tokens to parse into the Abstract syntax tree.
    * @param defaultSupplier the object that will take the current token and return an object
    *                        of the generic T defined for this class.
    */
