@@ -9,6 +9,9 @@ import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,10 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author Mike Funaro
@@ -315,6 +314,66 @@ public class AstTest {
     assertThat(context.getMatches().size(), is(2));
     assertThat(context.getMatches().toArray(),
         Matchers.arrayContaining(new Object[]{"A", "C"}));
+  }
+
+
+  /**
+   * Test proper handling of parentheses. Use the same formula but move the parentheses
+   * so that it is effectively a different formula. Testing using the same mask, one formula
+   * should pass, the other will fail.
+   */
+  @Test
+  public void testNestingEval() {
+
+    // Use the same mask for both evaluations.
+    List<String> mask = Collections.singletonList("C");
+
+    // This first formula will fail evaluation with the mask.
+    List<DrgLexerToken> lexerTokens1 = DrgFormulaLexer.lex("A & (B|C)");
+    DescentParser<MaskedContext<String>> parser1 = new DescentParser<>(lexerTokens1.listIterator(),
+        new StringOperandSupplier(), suppliers);
+
+    DrgSyntaxTree<MaskedContext<String>> ast1 = parser1.buildExpressionTree();
+
+    ExpressionResult<MaskedContext<String>> evaluation1 = ast1.evaluateExpression(
+        new TestContext<>(mask));
+
+    assertThat(evaluation1.isMatched(), is(false));
+
+    // This second formula will pass the evaluation with the mask.
+    List<DrgLexerToken> lexerTokens2 = DrgFormulaLexer.lex("(A & B) | C");
+    DescentParser<MaskedContext<String>> parser2 = new DescentParser<>(lexerTokens2.listIterator(),
+        new StringOperandSupplier(), suppliers);
+
+    DrgSyntaxTree<MaskedContext<String>> ast2 = parser2.buildExpressionTree();
+
+    ExpressionResult<MaskedContext<String>> evaluation2 = ast2.evaluateExpression(
+        new TestContext<>(mask));
+
+    assertThat(evaluation2.isMatched(), is(true));
+  }
+
+  /**
+   * Test that negating parentheses works as expected. The formula inside the negated parentheses
+   * needs to be evaluated and a true outcome for the result to then be negated. E.G. if the formula
+   * is ~(B & C) the mask would need to include B and C. The B & C part evaluates to true and then
+   * the true result is negated, so false would come out of the NOT node. If only one of the B and C
+   * is present, the AND node evaluates to false, which in turn causes a true to come out of the
+   * NOT node, meaning that one or both of the B and C are not present.
+   */
+  @Test
+  public void testNegationParentheses() {
+
+    List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & ~(B & C)");
+    DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
+        new StringOperandSupplier(), suppliers);
+
+    DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
+    List<String> mask = Arrays.asList("A", "C");
+    ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
+        new TestContext<>(mask));
+
+    assertThat(evaluation.isMatched(), is(true));
   }
 
 
