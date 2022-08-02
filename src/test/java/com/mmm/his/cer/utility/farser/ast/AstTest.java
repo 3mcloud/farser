@@ -9,10 +9,6 @@ import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mike Funaro
@@ -29,8 +28,8 @@ import java.util.Set;
 public class AstTest {
 
   final Map<String, NodeSupplier<DrgLexerToken, MaskedContext<String>>> suppliers = new HashMap<>();
-  final Map<String, NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>>> customOperandSuppliers
-      = new HashMap<>();
+  final Map<String, NodeSupplier<DrgLexerToken, MaskedContext<CustomTestOperand>>> customOperandSuppliers =
+      new HashMap<>();
 
   @Before
   public void setUp() {
@@ -53,7 +52,7 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(context.getMatches().toArray(),
-        Matchers.arrayContaining(new Object[]{"luck", "E"}));
+        Matchers.arrayContaining(new Object[] {"luck", "E"}));
   }
 
   @Test
@@ -116,7 +115,7 @@ public class AstTest {
 
     assertThat(evaluation.isMatched(), is(true));
     assertThat(context.getMatches().toArray(),
-        Matchers.arrayContaining(new Object[]{"B", "C", "F", "G"}));
+        Matchers.arrayContaining(new Object[] {"B", "C", "F", "G"}));
   }
 
   @Test
@@ -313,14 +312,14 @@ public class AstTest {
     assertThat(evaluation.isMatched(), is(true));
     assertThat(context.getMatches().size(), is(2));
     assertThat(context.getMatches().toArray(),
-        Matchers.arrayContaining(new Object[]{"A", "C"}));
+        Matchers.arrayContaining(new Object[] {"A", "C"}));
   }
 
 
   /**
-   * Test proper handling of parentheses. Use the same formula but move the parentheses
-   * so that it is effectively a different formula. Testing using the same mask, one formula
-   * should pass, the other will fail.
+   * Test proper handling of parentheses. Use the same formula but move the parentheses so that it
+   * is effectively a different formula. Testing using the same mask, one formula should pass, the
+   * other will fail.
    */
   @Test
   public void testNestingEval() {
@@ -373,8 +372,8 @@ public class AstTest {
    * needs to be evaluated and a true outcome for the result to then be negated. E.G. if the formula
    * is ~(B & C) the mask would need to include B and C. The B & C part evaluates to true and then
    * the true result is negated, so false would come out of the NOT node. If only one of the B and C
-   * is present, the AND node evaluates to false, which in turn causes a true to come out of the
-   * NOT node, meaning that one or both of the B and C are not present.
+   * is present, the AND node evaluates to false, which in turn causes a true to come out of the NOT
+   * node, meaning that one or both of the B and C are not present.
    */
   @Test
   public void testNegationParentheses() {
@@ -414,7 +413,8 @@ public class AstTest {
         return false;
       }
       CustomTestOperand that = (CustomTestOperand) o;
-      return value.equals(that.value) &&
+      return value.equals(that.value)
+          &&
           prefix.equals(that.prefix);
     }
 
@@ -424,7 +424,7 @@ public class AstTest {
     }
   }
 
-  private static class StringOperandSupplier implements
+  public static class StringOperandSupplier implements
       NodeSupplier<DrgLexerToken, MaskedContext<String>> {
 
     @Override
@@ -482,12 +482,15 @@ public class AstTest {
 
     private List<T> mask;
     private Set<T> accumulator;
+    private List<T> evaluatedValuesInOrderOfEvaluation;
 
     public TestContext(List<T> mask) {
       this.mask = mask;
       this.accumulator = new HashSet<>();
+      this.evaluatedValuesInOrderOfEvaluation = new ArrayList<>();
     }
 
+    @Override
     public List<T> getMask() {
       return mask;
     }
@@ -504,6 +507,7 @@ public class AstTest {
       this.accumulator = accumulator;
     }
 
+    @Override
     public void accumulate(T value) {
       this.accumulator.add(value);
     }
@@ -512,6 +516,16 @@ public class AstTest {
     public Set<T> getMatches() {
       return accumulator;
     }
+
+    @Override
+    public void evaluating(T value) {
+      this.evaluatedValuesInOrderOfEvaluation.add(value);
+    }
+
+    public List<T> getEvaluatedValuesInOrderOfEvaluation() {
+      return evaluatedValuesInOrderOfEvaluation;
+    }
+
   }
 
   public static class ContainsNodeForContext<T> implements BooleanExpression<MaskedContext<T>> {
@@ -524,6 +538,7 @@ public class AstTest {
 
     @Override
     public boolean evaluate(MaskedContext<T> context) {
+      context.evaluating(value);
       if (context.getMask().contains(value)) {
         context.accumulate(value);
         return true;
@@ -537,6 +552,8 @@ public class AstTest {
     List<T> getMask();
 
     void accumulate(T value);
+
+    void evaluating(T value);
 
     Set<T> getMatches();
   }
