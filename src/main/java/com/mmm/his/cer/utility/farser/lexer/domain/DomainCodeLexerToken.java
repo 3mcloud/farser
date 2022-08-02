@@ -3,6 +3,7 @@ package com.mmm.his.cer.utility.farser.lexer.domain;
 
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
+import java.util.Objects;
 
 /**
  * Token class that can be used to represent the pieces of a lexed string.
@@ -43,6 +44,23 @@ public class DomainCodeLexerToken implements LexerToken<DomainCodeToken> {
   @Override
   public String getValue() {
     return value;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(type, value);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof DomainCodeLexerToken)) {
+      return false;
+    }
+    DomainCodeLexerToken other = (DomainCodeLexerToken) obj;
+    return type == other.type && Objects.equals(value, other.value);
   }
 
   @Override

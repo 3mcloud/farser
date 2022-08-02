@@ -3,6 +3,7 @@ package com.mmm.his.cer.utility.farser.lexer.drg;
 
 import com.mmm.his.cer.utility.farser.lexer.LexerToken;
 import com.mmm.his.cer.utility.farser.lexer.TokenType;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -74,6 +75,24 @@ public class DrgLexerToken implements LexerToken<DrgFormulaToken> {
     return Optional.ofNullable(prefix);
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(prefix, type, value);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof DrgLexerToken)) {
+      return false;
+    }
+    DrgLexerToken other = (DrgLexerToken) obj;
+    return Objects.equals(prefix, other.prefix)
+        && type == other.type
+        && Objects.equals(value, other.value);
+  }
 
   @Override
   public String toString() {
