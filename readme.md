@@ -77,8 +77,39 @@ prefix (e.g. "PFX:val" is split into prefix "PFX" and value "val").
 
 The Descent Parser can take a `ListIterator` of type `DrgFormulaToken`s and build an Abstract 
 Syntax Tree, which can then be used to "evaluate" the expression against a list of operands. The 
-AST contains the boolean logic of the formula and can evaluate a given list of operands to see 
-if the operands would evaluate to true or false. 
+AST contains the **boolean** logic of the formula and can evaluate a given list of operands to see 
+if the operands would evaluate to true or false.
+
+The purpose of the parser is not only to evaluate a formula (for which other approaches like 
+[Apache Commons JEXL](https://commons.apache.org/proper/commons-jexl/reference/examples.html#Evaluating_Expressions) 
+could be used), but also to interact with the evaluation during its processing operation. The 
+"terminal nodes" (the ones where an evaluation has to happen) can be provided at AST construction 
+time and can implement any necessary evaluation and/or inspection logic.
+
+
+**Parser operator precedence:**
+
+The operators in the following table are listed according to precedence order. The closer to the 
+top of the table an operator appears, the higher its precedence.
+
+| Operator           | DrgFormulaToken |
+| ------------------ | --------------- |
+| unary NOT          |  ~              |
+| logical/binary AND |  &              |
+| logical/binary OR  |  \|             |
+
+
+**Evaluation order:** Formula evaluation happens from left to right. Only relevant portions of the 
+formula will get evaluated (until a `true` result is achieved). See also: 
+[Short-circuit evaluation](https://en.wikipedia.org/wiki/Short-circuit_evaluation).
+
+Examples: 
+
+ * `A & B | C` = `(A & B) | C` -> with `A=true`, `B=true`, `C=true`, it evaluates "A & B" only
+ * `C | A & B` = `C | (A & B)` -> with `A=true`, `B=true`, `C=true`, it evaluates "C" only
+
+
+
 
 #### Descent Parser Generic Type
 
