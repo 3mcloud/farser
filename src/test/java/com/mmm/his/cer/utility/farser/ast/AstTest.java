@@ -7,17 +7,18 @@ import com.mmm.his.cer.utility.farser.ast.node.type.BooleanExpression;
 import com.mmm.his.cer.utility.farser.ast.node.type.NodeSupplier;
 import com.mmm.his.cer.utility.farser.ast.parser.DescentParser;
 import com.mmm.his.cer.utility.farser.ast.parser.ExpressionResult;
+import com.mmm.his.cer.utility.farser.ast.setup.ContainsNodeForContext;
+import com.mmm.his.cer.utility.farser.ast.setup.MaskedContext;
+import com.mmm.his.cer.utility.farser.ast.setup.TestContext;
 import com.mmm.his.cer.utility.farser.lexer.DrgFormulaLexer;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -477,83 +478,4 @@ public class AstTest {
     }
   }
 
-  public static class TestContext<T> implements MaskedContext<T> {
-
-    private List<T> mask;
-    private Set<T> accumulator;
-    private List<T> evaluatedValuesInOrderOfEvaluation;
-
-    public TestContext(List<T> mask) {
-      this.mask = mask;
-      this.accumulator = new HashSet<>();
-      this.evaluatedValuesInOrderOfEvaluation = new ArrayList<>();
-    }
-
-    @Override
-    public List<T> getMask() {
-      return mask;
-    }
-
-    public void setMask(List<T> mask) {
-      this.mask = mask;
-    }
-
-    public Set<T> getAccumulator() {
-      return accumulator;
-    }
-
-    public void setAccumulator(Set<T> accumulator) {
-      this.accumulator = accumulator;
-    }
-
-    @Override
-    public void accumulate(T value) {
-      this.accumulator.add(value);
-    }
-
-    @Override
-    public Set<T> getMatches() {
-      return accumulator;
-    }
-
-    @Override
-    public void evaluating(T value) {
-      this.evaluatedValuesInOrderOfEvaluation.add(value);
-    }
-
-    public List<T> getEvaluatedValuesInOrderOfEvaluation() {
-      return evaluatedValuesInOrderOfEvaluation;
-    }
-
-  }
-
-  public static class ContainsNodeForContext<T> implements BooleanExpression<MaskedContext<T>> {
-
-    private T value;
-
-    public ContainsNodeForContext(T value) {
-      this.value = value;
-    }
-
-    @Override
-    public boolean evaluate(MaskedContext<T> context) {
-      context.evaluating(value);
-      if (context.getMask().contains(value)) {
-        context.accumulate(value);
-        return true;
-      }
-      return false;
-    }
-  }
-
-  public interface MaskedContext<T> {
-
-    List<T> getMask();
-
-    void accumulate(T value);
-
-    void evaluating(T value);
-
-    Set<T> getMatches();
-  }
 }
