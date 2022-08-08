@@ -4,19 +4,19 @@ package com.mmm.his.cer.utility.farser.ast.node.type;
  * This class represents a non-terminal node in the AST. These types of nodes will have a left and a
  * right child.
  *
- * @param <C> The type used in the terminal nodes.
+ * @param <T> The type used in the terminal nodes.
  * @author Mike Funaro
  */
-public abstract class NonTerminal<C> implements BooleanExpression<C> {
+public abstract class NonTerminal<T> implements BooleanExpression<T> {
 
-  protected BooleanExpression<C> left;
-  protected BooleanExpression<C> right;
+  protected BooleanExpression<T> left;
+  protected BooleanExpression<T> right;
 
-  public void setLeft(BooleanExpression<C> left) {
+  public void setLeft(BooleanExpression<T> left) {
     this.left = left;
   }
 
-  public void setRight(BooleanExpression<C> right) {
+  public void setRight(BooleanExpression<T> right) {
     this.right = right;
   }
 

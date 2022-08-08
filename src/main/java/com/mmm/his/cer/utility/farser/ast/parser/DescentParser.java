@@ -19,15 +19,15 @@ import java.util.Map;
  *
  * @author Mike Funaro
  *
- * @param <C> The type of the context used when evaluating the AST
+ * @param <T> The type of the context used when evaluating the AST
  */
-public class DescentParser<C> {
+public class DescentParser<T> {
 
-  private BooleanExpression<C> root;
+  private BooleanExpression<T> root;
   private DrgLexerToken currentToken;
   private ListIterator<DrgLexerToken> tokenIterator;
-  private final NodeSupplier<DrgLexerToken, C> defaultSupplier;
-  private final Map<String, NodeSupplier<DrgLexerToken, C>> suppliers;
+  private final NodeSupplier<DrgLexerToken, T> defaultSupplier;
+  private final Map<String, NodeSupplier<DrgLexerToken, T>> suppliers;
 
   /**
    * Ctor.
@@ -40,8 +40,8 @@ public class DescentParser<C> {
    *                        key)
    */
   public DescentParser(ListIterator<DrgLexerToken> tokenIterator,
-      NodeSupplier<DrgLexerToken, C> defaultSupplier,
-      Map<String, NodeSupplier<DrgLexerToken, C>> suppliers) {
+      NodeSupplier<DrgLexerToken, T> defaultSupplier,
+      Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
     this.tokenIterator = tokenIterator;
     this.currentToken = tokenIterator.next();
     if (defaultSupplier == null) {
@@ -71,7 +71,7 @@ public class DescentParser<C> {
   /**
    * Build the abstract syntax tree.
    */
-  public DrgSyntaxTree<C> buildExpressionTree() {
+  public DrgSyntaxTree<T> buildExpressionTree() {
     expression();
     return this.getAst();
   }
@@ -83,7 +83,7 @@ public class DescentParser<C> {
     term();
     while (currentToken.getType() == DrgFormulaToken.OR) {
       this.eat(DrgFormulaToken.OR);
-      Or<C> or = new Or<>();
+      Or<T> or = new Or<>();
       or.setLeft(root);
       term();
       or.setRight(root);
@@ -98,7 +98,7 @@ public class DescentParser<C> {
     factor();
     while (currentToken.getType() == DrgFormulaToken.AND) {
       this.eat(DrgFormulaToken.AND);
-      And<C> and = new And<>();
+      And<T> and = new And<>();
       and.setLeft(root);
       factor();
       and.setRight(root);
@@ -112,7 +112,7 @@ public class DescentParser<C> {
   private void factor() {
     if (currentToken.getType() == DrgFormulaToken.ATOM) {
 
-      NodeSupplier<DrgLexerToken, C> nodeSupplier = suppliers.getOrDefault(
+      NodeSupplier<DrgLexerToken, T> nodeSupplier = suppliers.getOrDefault(
           currentToken.value, defaultSupplier);
       root = nodeSupplier.createNode(currentToken);
       this.eat(DrgFormulaToken.ATOM);
@@ -122,7 +122,7 @@ public class DescentParser<C> {
       this.eat(DrgFormulaToken.RPAREN);
     } else if (currentToken.getType() == DrgFormulaToken.NOT) {
       this.eat(DrgFormulaToken.NOT);
-      Not<C> not = new Not<>();
+      Not<T> not = new Not<>();
       factor();
       not.setChild(root);
       root = not;
@@ -147,7 +147,7 @@ public class DescentParser<C> {
    *
    * @return new DrgSyntaxTree
    */
-  private DrgSyntaxTree<C> getAst() {
+  private DrgSyntaxTree<T> getAst() {
     return new DrgSyntaxTree<>(this.root);
   }
 }
