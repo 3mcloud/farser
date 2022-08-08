@@ -353,8 +353,7 @@ public class AstTest {
 
     // This third formula will pass the evaluation with the mask. Since it is all on the same level
     // it will be evaluated from left to right. A & B will be grouped as the LEFT side of the OR
-    // operator and C will be the RIGHT side. NOTE operators do not have precedence, hence left to
-    // right evaluation when there is no parentheses.
+    // operator and C will be the RIGHT side.
     List<DrgLexerToken> lexerTokens3 = DrgFormulaLexer.lex("A & B | C");
     DescentParser<MaskedContext<String>> parser3 = new DescentParser<>(lexerTokens3.listIterator(),
         new StringOperandSupplier(), suppliers);
