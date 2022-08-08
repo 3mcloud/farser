@@ -14,29 +14,34 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * Recursive descent parser that will buildExpressionTree an Abstract syntax tree from a grouper
- * formula.
+ * Recursive descent parser that will build an Abstract syntax tree from a formula (list of formula
+ * tokens).
  *
  * @author Mike Funaro
+ *
+ * @param <C> The type of the context used when evaluating the AST
  */
-public class DescentParser<T> {
+public class DescentParser<C> {
 
-  private BooleanExpression<T> root;
+  private BooleanExpression<C> root;
   private DrgLexerToken currentToken;
   private ListIterator<DrgLexerToken> tokenIterator;
-  private final NodeSupplier<DrgLexerToken, T> defaultSupplier;
-  private final Map<String, NodeSupplier<DrgLexerToken, T>> suppliers;
+  private final NodeSupplier<DrgLexerToken, C> defaultSupplier;
+  private final Map<String, NodeSupplier<DrgLexerToken, C>> suppliers;
 
   /**
    * Ctor.
    *
    * @param tokenIterator   list of tokens to parse into the Abstract syntax tree.
-   * @param defaultSupplier the object that will take the current token and return an object
-   *                        of the generic T defined for this class.
+   * @param defaultSupplier a factory which creates nodes for the tree. This supplier is used by
+   *                        default when <code>suppliers</code> does not contain a node specific
+   *                        supplier
+   * @param suppliers       A map with node suppliers specific to certain tokens (token value as map
+   *                        key)
    */
   public DescentParser(ListIterator<DrgLexerToken> tokenIterator,
-      NodeSupplier<DrgLexerToken, T> defaultSupplier,
-      Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
+      NodeSupplier<DrgLexerToken, C> defaultSupplier,
+      Map<String, NodeSupplier<DrgLexerToken, C>> suppliers) {
     this.tokenIterator = tokenIterator;
     this.currentToken = tokenIterator.next();
     if (defaultSupplier == null) {
@@ -56,7 +61,7 @@ public class DescentParser<T> {
 
   /**
    * Set a new tokenIterator so that we can build another AST using the same setup parser. Uses the
-   * same terminalObjectSupplier that was set when the {@link DescentParser} was created.
+   * same {@link NodeSupplier}s which were set when the {@link DescentParser} was created.
    */
   public void setTokenIterator(ListIterator<DrgLexerToken> tokenIterator) {
     this.tokenIterator = tokenIterator;
@@ -66,19 +71,19 @@ public class DescentParser<T> {
   /**
    * Build the abstract syntax tree.
    */
-  public DrgSyntaxTree<T> buildExpressionTree() {
+  public DrgSyntaxTree<C> buildExpressionTree() {
     expression();
     return this.getAst();
   }
 
   /**
-   * Expression method which will buildExpressionTree the OR after parsing a term.
+   * Expression method which will build the OR after parsing a term.
    */
   private void expression() {
     term();
     while (currentToken.getType() == DrgFormulaToken.OR) {
       this.eat(DrgFormulaToken.OR);
-      Or<T> or = new Or<>();
+      Or<C> or = new Or<>();
       or.setLeft(root);
       term();
       or.setRight(root);
@@ -87,13 +92,13 @@ public class DescentParser<T> {
   }
 
   /**
-   * Term method which will buildExpressionTree the AND after parsing the factors or operands.
+   * Term method which will build the AND after parsing the factors or operands.
    */
   private void term() {
     factor();
     while (currentToken.getType() == DrgFormulaToken.AND) {
       this.eat(DrgFormulaToken.AND);
-      And<T> and = new And<>();
+      And<C> and = new And<>();
       and.setLeft(root);
       factor();
       and.setRight(root);
@@ -107,7 +112,7 @@ public class DescentParser<T> {
   private void factor() {
     if (currentToken.getType() == DrgFormulaToken.ATOM) {
 
-      NodeSupplier<DrgLexerToken, T> nodeSupplier = suppliers.getOrDefault(
+      NodeSupplier<DrgLexerToken, C> nodeSupplier = suppliers.getOrDefault(
           currentToken.value, defaultSupplier);
       root = nodeSupplier.createNode(currentToken);
       this.eat(DrgFormulaToken.ATOM);
@@ -117,12 +122,12 @@ public class DescentParser<T> {
       this.eat(DrgFormulaToken.RPAREN);
     } else if (currentToken.getType() == DrgFormulaToken.NOT) {
       this.eat(DrgFormulaToken.NOT);
-      Not<T> not = new Not<>();
+      Not<C> not = new Not<>();
       factor();
       not.setChild(root);
       root = not;
     } else {
-      throw new FarserException("Expression Malformed on token " + currentToken);
+      throw new FarserException("Expression malformed on token " + currentToken);
     }
   }
 
@@ -142,7 +147,7 @@ public class DescentParser<T> {
    *
    * @return new DrgSyntaxTree
    */
-  private DrgSyntaxTree<T> getAst() {
+  private DrgSyntaxTree<C> getAst() {
     return new DrgSyntaxTree<>(this.root);
   }
 }

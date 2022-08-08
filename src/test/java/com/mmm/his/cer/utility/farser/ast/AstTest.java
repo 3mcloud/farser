@@ -60,7 +60,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A|B) & (D|E)");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
@@ -74,7 +74,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ((B & C) & (D | E | (F & G)))");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("B", "C", "F", "G");
@@ -92,7 +92,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ((B & C) & (D | E | (F & G)))");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
@@ -105,7 +105,7 @@ public class AstTest {
   public void testLeftSideComplexLeftSideEval() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("((B & C) & (D | E | (F & G))) | A");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("G", "F", "C", "B");
@@ -123,7 +123,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("((B & C) & (D | E | (F & G))) | A");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
@@ -141,7 +141,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A | B| C| (D & (G & (F|H)))))");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("D", "G", "H");
@@ -159,7 +159,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A | B| C| (D & (G & (F|H)))))");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
@@ -173,7 +173,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
@@ -191,7 +191,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("B");
@@ -206,7 +206,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("G");
@@ -256,7 +256,7 @@ public class AstTest {
   public void testEvalOfAnotherAst() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A | ~B");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
 
@@ -286,7 +286,7 @@ public class AstTest {
   public void testSingleListEval() {
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Collections.singletonList("A");
     ExpressionResult<MaskedContext<String>> evaluation = ast.evaluateExpression(
@@ -302,7 +302,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("(A|B) & (C|D)");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("A", "C", "B");
@@ -330,7 +330,7 @@ public class AstTest {
     // This first formula will fail evaluation with the mask.
     List<DrgLexerToken> lexerTokens1 = DrgFormulaLexer.lex("A & (B|C)");
     DescentParser<MaskedContext<String>> parser1 = new DescentParser<>(lexerTokens1.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast1 = parser1.buildExpressionTree();
 
@@ -342,7 +342,7 @@ public class AstTest {
     // This second formula will pass the evaluation with the mask.
     List<DrgLexerToken> lexerTokens2 = DrgFormulaLexer.lex("(A & B) | C");
     DescentParser<MaskedContext<String>> parser2 = new DescentParser<>(lexerTokens2.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast2 = parser2.buildExpressionTree();
 
@@ -356,7 +356,7 @@ public class AstTest {
     // operator and C will be the RIGHT side.
     List<DrgLexerToken> lexerTokens3 = DrgFormulaLexer.lex("A & B | C");
     DescentParser<MaskedContext<String>> parser3 = new DescentParser<>(lexerTokens3.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast3 = parser3.buildExpressionTree();
 
@@ -379,7 +379,7 @@ public class AstTest {
 
     List<DrgLexerToken> lexerTokens = DrgFormulaLexer.lex("A & ~(B & C)");
     DescentParser<MaskedContext<String>> parser = new DescentParser<>(lexerTokens.listIterator(),
-        new StringOperandSupplier(), suppliers);
+        new StringOperandSupplier(), Collections.emptyMap());
 
     DrgSyntaxTree<MaskedContext<String>> ast = parser.buildExpressionTree();
     List<String> mask = Arrays.asList("A", "C");
