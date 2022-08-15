@@ -1,5 +1,7 @@
 package com.mmm.his.cer.utility.farser.lexer;
 
+import java.util.Optional;
+
 /**
  * Token class which represents the pieces of a lexed string.
  *
@@ -15,6 +17,17 @@ public interface LexerToken<T extends TokenType<?>> {
    * @return The token
    */
   T getType();
+
+  /**
+   * Returns the {@link CommonTokenType} for this token.
+   *
+   * @return The common token type
+   */
+  default Optional<CommonTokenType> getCommonType() {
+    T type = getType();
+    // Delegation for simpler access
+    return type == null ? Optional.empty() : type.getCommonTokenType();
+  }
 
   /**
    * The value of the token.<br />

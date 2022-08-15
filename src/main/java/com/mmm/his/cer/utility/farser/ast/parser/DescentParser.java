@@ -10,6 +10,7 @@ import com.mmm.his.cer.utility.farser.lexer.FarserException;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgFormulaToken;
 import com.mmm.his.cer.utility.farser.lexer.drg.DrgLexerToken;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class DescentParser<T> {
 
   private BooleanExpression<T> root;
   private DrgLexerToken currentToken;
-  private ListIterator<DrgLexerToken> tokenIterator;
+  private Iterator<DrgLexerToken> tokenIterator;
   private final NodeSupplier<DrgLexerToken, T> defaultSupplier;
   private final Map<String, NodeSupplier<DrgLexerToken, T>> suppliers;
 
@@ -39,7 +40,7 @@ public class DescentParser<T> {
    * @param suppliers       A map with node suppliers specific to certain tokens (token value as map
    *                        key)
    */
-  public DescentParser(ListIterator<DrgLexerToken> tokenIterator,
+  public DescentParser(Iterator<DrgLexerToken> tokenIterator,
       NodeSupplier<DrgLexerToken, T> defaultSupplier,
       Map<String, NodeSupplier<DrgLexerToken, T>> suppliers) {
     this.tokenIterator = tokenIterator;
